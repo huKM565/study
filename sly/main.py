@@ -45,13 +45,13 @@ class KotlinLexer(Lexer):
 
     ignore = ' \t'
 
+    EQUALS = r'=='
     ASSIGN = r'='
     PLUS = r'\+'
     MINUS = r'-'
     TIMES = r'\*'
     DIV = r'/'
 
-    EQUALS = r'=='
     NOT_EQUALS = r'!='
     LTE = r'<='
     GTE = r'>='
