@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "2.3.21"
-    application
+    id("org.jetbrains.compose") version "1.12.0"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.3.21"
 }
 
 group = "ru.hukm"
@@ -8,16 +9,20 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    google()
 }
 
 kotlin {
     jvmToolchain(21)
 }
 
-application {
-    mainClass.set("ru.hukm.MainKt")
+dependencies {
+    implementation(compose.desktop.currentOs)
+    implementation(compose.material3)
 }
 
-tasks.named<JavaExec>("run") {
-    standardInput = System.`in`
+compose.desktop {
+    application {
+        mainClass = "ru.hukm.ui.MainKt"
+    }
 }
