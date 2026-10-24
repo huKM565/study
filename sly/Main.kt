@@ -1,5 +1,3 @@
-package org.example
-
 fun main() {
     var i = 0
 

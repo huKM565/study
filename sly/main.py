@@ -4,18 +4,15 @@ from sly import Lexer
 
 class KotlinLexer(Lexer):
     tokens = {
-        PACKAGE,
         PRINTLN,
         FUN,
         VAR,
         ID,
         IF,
-        ELSE_IF,
         ELSE,
         FOR,
         IN,
         DOUBLE_DOTS,
-        DOT,
 
         INT_LITERAL,
         FLOAT_LITERAL,
@@ -63,7 +60,6 @@ class KotlinLexer(Lexer):
     NOT = r'!'
 
     DOUBLE_DOTS = r'\.\.'
-    DOT = r'\.'
 
     LPAREN = r'\('
     RPAREN = r'\)'
@@ -71,7 +67,6 @@ class KotlinLexer(Lexer):
     RBREACE = r'\}'
 
     keywords = {
-        'package': PACKAGE,
         'fun': FUN,
         'var': VAR,
         'if': IF,
@@ -102,8 +97,13 @@ class KotlinLexer(Lexer):
     def ignore_newline(self, t):
         self.lineno += len(t.value)
 
+    def __init__(self):
+        super().__init__()
+        self.has_errors = False
+
     def error(self, t):
-        print(f"Строка {self.lineno}: Недопустимый символ '{t.value}'")
+        self.has_errors = True
+        print(f"Строка {self.lineno}: Недопустимый символ '{t.value[0]}'")
         self.index += 1
 
 
