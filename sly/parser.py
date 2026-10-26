@@ -19,7 +19,7 @@ class KotlinParser(Parser):
 
     @_('declaration_list')
     def program(self, p):
-        return ('program', p.declaration_list)
+        return ('program', p.declaration_list) 
 
     @_('declaration_list declaration')
     def declaration_list(self, p):
