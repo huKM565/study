@@ -15,7 +15,7 @@ class KotlinLexer(Lexer):
         DOUBLE_DOTS,
 
         INT_LITERAL,
-        FLOAT_LITERAL,
+        DOUBLE_LITERAL,
         STRING_LITERAL,
 
         ASSIGN,
@@ -82,7 +82,7 @@ class KotlinLexer(Lexer):
         return t
 
     @_(r'\d+\.\d+')
-    def FLOAT_LITERAL(self, t):
+    def DOUBLE_LITERAL(self, t):
         return t
 
     @_(r'\d+')
@@ -99,12 +99,9 @@ class KotlinLexer(Lexer):
 
     def __init__(self):
         super().__init__()
-        self.has_errors = False
 
     def error(self, t):
-        self.has_errors = True
-        print(f"Строка {self.lineno}: Недопустимый символ '{t.value[0]}'")
-        self.index += 1
+        raise ValueError(f"Строка {self.lineno}: Недопустимый символ '{t.value[0]}'")
 
 
 if __name__ == '__main__':

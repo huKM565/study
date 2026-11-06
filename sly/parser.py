@@ -17,21 +17,17 @@ class KotlinParser(Parser):
         ('right', NOT, UMINUS),
     )
 
-    @_('declaration_list')
+    @_('function_list')
     def program(self, p):
-        return ('program', p.declaration_list) 
+        return ('program', p.function_list) 
 
-    @_('declaration_list declaration')
-    def declaration_list(self, p):
-        return p.declaration_list + [p.declaration]
+    @_('function_list function')
+    def function_list(self, p):
+        return p.function_list + [p.function]
 
-    @_('declaration')
-    def declaration_list(self, p):
-        return [p.declaration]
-
-    @_('function', 'var_decl')
-    def declaration(self, p):
-        return p[0]
+    @_('function')
+    def function_list(self, p):
+        return [p.function]
 
     @_('FUN ID LPAREN RPAREN block')
     def function(self, p):
@@ -126,9 +122,9 @@ class KotlinParser(Parser):
     def expression(self, p):
         return ('int', int(p.INT_LITERAL))
 
-    @_('FLOAT_LITERAL')
+    @_('DOUBLE_LITERAL')
     def expression(self, p):
-        return ('float', float(p.FLOAT_LITERAL))
+        return ('double', float(p.DOUBLE_LITERAL))
 
     @_('STRING_LITERAL')
     def expression(self, p):
@@ -140,15 +136,13 @@ class KotlinParser(Parser):
 
     def __init__(self):
         super().__init__()
-        self.has_errors = False
 
     def error(self, p):
-        self.has_errors = True
         if p:
-            print(f"Синтаксическая ошибка на строке {p.lineno}: "
-                  f"неожиданный токен {p.type} '{p.value}'")
+            raise SyntaxError(f"Синтаксическая ошибка на строке {p.lineno}: "
+                              f"неожиданный токен {p.type} '{p.value}'")
         else:
-            print("Синтаксическая ошибка: неожиданный конец файла")
+            raise SyntaxError("Синтаксическая ошибка: неожиданный конец файла")
 
 
 if __name__ == '__main__':
@@ -162,12 +156,15 @@ if __name__ == '__main__':
         parser = KotlinParser()
         tree = parser.parse(lexer.tokenize(code))
 
-        if lexer.has_errors or parser.has_errors:
-            print('Разбор завершился с ошибками.')
-            sys.exit(1)
-        elif tree is not None:
+        if tree is not None:
             print('Разбор выполнен успешно. Дерево:')
             pprint(tree, width=100)
+        else:
+            print('Разбор завершился с ошибками.')
+            sys.exit(1)
 
     except FileNotFoundError:
         print(f"Ошибка: файл '{filename}' не найден")
+    except (ValueError, SyntaxError) as e:
+        print(f'Разбор завершился с ошибками: {e}')
+        sys.exit(1)
